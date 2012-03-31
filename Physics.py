@@ -8,7 +8,7 @@ class Particle(object):
     def __init__(self, rad):
         self.positionX = random.randint(20, 380)
         self.positionY = random.randint(20, 380)
-        self.velocity = Vector(random.uniform(0.01, 0.5), random.uniform(0.01, 0.5))
+        self.velocity = Vector(random.randint(1, 5), random.randint(1, 5))
         self.rad = rad
         self.item = ""
 
@@ -73,17 +73,39 @@ class Particle(object):
 
 def collideBalls(ballA, ballB):
     # Create a vector from the ball positions
-    a = Vector(ballA.getPositionX(), ballA.getPositionY())
-    b = Vector(ballB.getPositionX(), ballB.getPositionY())
+    s1 = Vector(ballA.getPositionX(), ballA.getPositionY())
+    s2 = Vector(ballB.getPositionX(), ballB.getPositionY())
     # Calculate distance between the balls and get the normal
-    ab = a-b
-    normal = Normalize(ab)
-
-    # Move balls backwards untill they don't overlap
-    while Distance(a, b) < (ballA.getRadius() + ballB.getRadius()):
+    normal = s1-s2
+    normal = Normalize(normal)
+    while Distance(s1, s2) < (ballA.getRadius() + ballB.getRadius()):
         ballA.move(normal)
-        a = Vector(ballA.getPositionX(), ballA.getPositionY())
-        b = Vector(ballB.getPositionX(), ballB.getPositionY())
+        s1 = Vector(ballA.getPositionX(), ballA.getPositionY())
+        s2 = Vector(ballB.getPositionX(), ballB.getPositionY())
+
+    # refer to http://freespace.virgin.net/hugo.elias/models/m_snokr.htm
+    a = ballA.getVelocityVector()
+    b = ballB.getVelocityVector()
+    impact = a-b
+    #print ("a: ")
+    #print (a)
+    #print ("b: ")
+    #print (b)
+    #print ("impact: ")
+    #print (impact)
+    impulse = Normalize(normal)
+    impactSpeed = Dot(impact, impulse)
+    #print ("impulse: ")
+    #print (impulse)
+    #print ("impact speed: ")
+    print (impactSpeed)
+    print ("impulse sqrt: ")
+    print (math.sqrt(abs(impactSpeed)))
+    impulse = impulse*(math.sqrt(abs(impactSpeed)))
+
+    # Set the velocities of each ball
+    ballA.setVelocityVector(a+impulse)
+    ballB.setVelocityVector(b-impulse)
     
 
 def particleCollide():
