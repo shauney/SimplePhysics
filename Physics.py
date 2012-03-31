@@ -73,30 +73,17 @@ class Particle(object):
 
 def collideBalls(ballA, ballB):
     # Create a vector from the ball positions
-    s1 = Vector(ballA.getPositionX(), ballA.getPositionY())
-    s2 = Vector(ballB.getPositionX(), ballB.getPositionY())
+    a = Vector(ballA.getPositionX(), ballA.getPositionY())
+    b = Vector(ballB.getPositionX(), ballB.getPositionY())
     # Calculate distance between the balls and get the normal
-    normal = s1-s2
-    normal = Normalize(normal)
-    while Distance(s1, s2) < (ballA.getRadius() + ballB.getRadius()):
+    ab = a-b
+    normal = Normalize(ab)
+
+    # Move balls backwards untill they don't overlap
+    while Distance(a, b) < (ballA.getRadius() + ballB.getRadius()):
         ballA.move(normal)
-        s1 = Vector(ballA.getPositionX(), ballA.getPositionY())
-        s2 = Vector(ballB.getPositionX(), ballB.getPositionY())
-
-    # refer to http://freespace.virgin.net/hugo.elias/models/m_snokr.htm
-    s1 = Vector(ballA.getPositionX(), ballA.getPositionY())
-    s2 = Vector(ballB.getPositionX(), ballB.getPositionY())
-    a = ballA.getVelocityVector()
-    b = ballB.getVelocityVector()
-    impact = b-a
-    impulse = Normalize(s2-s1)
-    impactSpeed = Dot(impact, impulse)
-    print (impactSpeed)
-    impulse = impulse*(math.sqrt(abs(impactSpeed)))
-
-    # Set the velocities of each ball
-    ballA.setVelocityVector(a-impulse)
-    ballB.setVelocityVector(b+impulse)
+        a = Vector(ballA.getPositionX(), ballA.getPositionY())
+        b = Vector(ballB.getPositionX(), ballB.getPositionY())
     
 
 def particleCollide():
